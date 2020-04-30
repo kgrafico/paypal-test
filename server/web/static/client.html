@@ -6,11 +6,13 @@
 <script src="http://code.jquery.com/jquery-3.2.1.min.js" crossorigin="anonymous"></script>
 
 <script>
-  $( document ).ready(() => {
+  $( document ).ready(() => 
       $.ajax({ url: "/client_token",
         context: document.body,
-        success: result => alert(`Client token created: ${result}`) });
-  });
+        success: result => {
+           alert(`Client token created: ${result}`);
+      }})
+  );
 
   </script>
   </head>
@@ -31,48 +33,50 @@
     <script>
       const button = document.querySelector('#submit-button');
       const refund = document.querySelector('#refund-button');
-      const trans = "123456";
+      let trans = "123456";
 
       braintree.dropin.create({
 
         // tokenization key here 
         authorization: 'sandbox_7bhynqqb_3q68q4cbb5wyvrhw',
         container: '#dropin-container'
-      }, (createErr, instance) => {
+      }, function (createErr, instance) {
         button.addEventListener('click', () => {
-          instance.requestPaymentMethod( (requestPaymentMethodErr, payload) => {
+
+          amount = $('#amount').val();
+          // alert(amount);
+          return instance.requestPaymentMethod((requestPaymentMethodErr, payload) => 
             
             // clicks on the 'Submit payment'
             //headers: {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.122 Safari/537.36"},
-            amount = $( "#amount" ).val();
             
-            //alert(amount);
-            $.ajax({
+             $.ajax({
               type: 'POST', 
               url: '/checkout',
               crossDomain: true,
               data: {'paymentMethodNonce': payload.nonce, 'amount': amount},
-              success: result => alert(result) ,
+              success: result => {
+                alert(result);
+              },
               error: (XMLHttpRequest, textStatus, errorThrown) => alert("some error")
-            });
-          });
+            })
+          );
         });
 
          //Refund function
-         refund.addEventListener('click', () => {
-            alert('refund');
+         refund.addEventListener('click', () => 
+
             $.ajax({
               type: 'POST',
               url: '/refund',
               crossDomain: true,
               data: {'transaction_id': trans},
-              success: result => {
-                debugger;
+              success: function(result) {
                 alert("Transaction id: " + result.data);
               },
               error: (XMLHttpRequest, textStatus, errorThrown) => alert("some error")
-            });
-          });
+            })
+          );
         });
 
     </script>
