@@ -18,7 +18,7 @@ docker run  --rm -p 5000:5000 simple-server
 
 ``` javascript javascript
 http:// localhost:5000/client.html
-``` javascript
+```
 
 
 
