@@ -1,11 +1,10 @@
 <html>
-    <head>
-    <meta charset="utf-8">
-    <!-- includes the Braintree JS client SDK -->
+  <head>
+  <meta charset="utf-8">
+  <!-- includes the Braintree JS client SDK -->
 <script src="https://js.braintreegateway.com/web/dropin/1.22.1/js/dropin.min.js"></script>
-
-<!-- includes jQuery -->
 <script src="http://code.jquery.com/jquery-3.2.1.min.js" crossorigin="anonymous"></script>
+
 <script>
   $( document ).ready(function() {
       console.log( "document loaded" );
@@ -13,25 +12,18 @@
         context: document.body,
         success: function(result){
            alert("Client token created");
-        }});
-
+      }});
   });
 
   </script>
-
-
-
   </head>
   <body>
-
-
     <div id="dropin-wrapper">
-       <div class="input-wrapper amount-wrapper">
-        <input id="amount" name="amount" type="tel" min="1" placeholder="Amount" value="10">
+      <div class="input-wrapper amount-wrapper">
+      <input id="amount" name="amount" type="tel" min="1" placeholder="Amount" value="10">
       </div>
         <div id="checkout-message"></div>
-        <div id="dropin-container"> 
-        </div>
+        <div id="dropin-container"></div>
       </section>
 
       <!-- <input type="hidden" id="nonce" name="payment_method_nonce" /> -->
@@ -39,64 +31,57 @@
       <button class="refund" type="submit" id="refund-button"><span>Refund Transaction</span></button>
     </div>
 
-
-
-
     <script>
-      var button = document.querySelector('#submit-button');
-      var refund = document.querySelector('#refund-button');
-      var trans = "123456";
+      const button = document.querySelector('#submit-button');
+      const refund = document.querySelector('#refund-button');
+      const trans = "123456";
+
       braintree.dropin.create({
-        // Insert your tokenization key here
-        authorization: 'sandbox_7bhynqqb_3q68q4cbb5wyvrhw',       
+
+        // tokenization key here 
+        authorization: 'sandbox_7bhynqqb_3q68q4cbb5wyvrhw',
         container: '#dropin-container'
-      }, function (createErr, instance) {
-        button.addEventListener('click', function () {
-          instance.requestPaymentMethod(function (requestPaymentMethodErr, payload) {
-            // When the user clicks on the 'Submit payment' button this code will send the
-            // encrypted payment information in a variable called a payment method nonce
+      }, (createErr, instance) => {
+        button.addEventListener('click', () => {
+          instance.requestPaymentMethod( (requestPaymentMethodErr, payload) =>{
+            
+            // clicks on the 'Submit payment'
             //headers: {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.122 Safari/537.36"},
             amount = $( "#amount" ).val();
             
-            alert(amount);
+            //alert(amount);
             $.ajax({
-              type: 'POST',              
+              type: 'POST', 
               url: '/checkout',
               crossDomain: true,
-              data: {'paymentMethodNonce': payload.nonce, 'amount': amount}
-            }).done(function(result) {
-              // Tear down the Drop-in UI
-              if (result.success) {
-               console.log(result.data);
-               trans = result.data.id;
-               alert("Transaction id: " + result.data)
-              } else   alert("Transaction Error" )
-    
+              data: {'paymentMethodNonce': payload.nonce, 'amount': amount},
+              success: function(result) {
+                alert(result);
+              },
+              error: function(XMLHttpRequest, textStatus, errorThrown) {
+                alert("some error");
+              }
             });
           });
         });
 
-         //Request a refund
-         refund.addEventListener('click', function() {            
+         //Refund function
+         refund.addEventListener('click', () => {
             alert('refund');
             $.ajax({
-              type: 'POST',              
+              type: 'POST',
               url: '/refund',
               crossDomain: true,
-              data: {'transaction_id': trans}
-            }).done(function(result) {
-              // Tear down the Drop-in UI
-              if (result.success) {
-               console.log(result.data);
-               alert("Transaction id: " + result.data)
-              } else   alert("Transaction Error" )
-                             
+              data: {'transaction_id': trans},
+              success: function(result) {
+                debugger;
+                alert("Transaction id: " + result.data);
+              },
+              error: function(XMLHttpRequest, textStatus, errorThrown) {
+                alert("some error");
+              }
             });
-
-          
-
           });
-
         });
 
     </script>

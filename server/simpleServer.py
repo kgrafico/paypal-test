@@ -4,16 +4,10 @@ from flask import Flask
 from flask import request
 
 
-
-
-
 app = Flask(__name__,
-            static_url_path='', 
-            static_folder='web/static',
-            template_folder='web/templates')
-
-
-          
+    static_url_path='', 
+    static_folder='web/static',
+    template_folder='web/templates')
 
 gateway = braintree.BraintreeGateway(
     braintree.Configuration(
@@ -45,7 +39,7 @@ def checkout():
   #Create a transaction
   result = gateway.transaction.sale({
       "amount": "10",
-      "payment_method_nonce": nonce_from_the_client,      
+      "payment_method_nonce": nonce_from_the_client,
       "options": {
         "submit_for_settlement": True
       } 
@@ -54,8 +48,6 @@ def checkout():
     return (result.transaction.id)
   else:
     return (format(result.message))
- 
-  
 
 @app.route("/refund", methods=["POST"])
 def refund():
@@ -74,7 +66,6 @@ def refund():
             'icon': 'fail',
             'message': 'Your test refund has a status of ' + transaction.status + '. See the Braintree API response and try again.'
         }
-    
 
     return(json.dumps(result) )
 
