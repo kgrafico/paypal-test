@@ -6,13 +6,10 @@
 <script src="http://code.jquery.com/jquery-3.2.1.min.js" crossorigin="anonymous"></script>
 
 <script>
-  $( document ).ready(function() {
-      console.log( "document loaded" );
+  $( document ).ready(() => {
       $.ajax({ url: "/client_token",
         context: document.body,
-        success: function(result){
-           alert("Client token created");
-      }});
+        success: result => alert(`Client token created: ${result}`) });
   });
 
   </script>
@@ -43,7 +40,7 @@
         container: '#dropin-container'
       }, (createErr, instance) => {
         button.addEventListener('click', () => {
-          instance.requestPaymentMethod( (requestPaymentMethodErr, payload) =>{
+          instance.requestPaymentMethod( (requestPaymentMethodErr, payload) => {
             
             // clicks on the 'Submit payment'
             //headers: {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.122 Safari/537.36"},
@@ -55,12 +52,8 @@
               url: '/checkout',
               crossDomain: true,
               data: {'paymentMethodNonce': payload.nonce, 'amount': amount},
-              success: function(result) {
-                alert(result);
-              },
-              error: function(XMLHttpRequest, textStatus, errorThrown) {
-                alert("some error");
-              }
+              success: result => alert(result) ,
+              error: (XMLHttpRequest, textStatus, errorThrown) => alert("some error")
             });
           });
         });
@@ -73,13 +66,11 @@
               url: '/refund',
               crossDomain: true,
               data: {'transaction_id': trans},
-              success: function(result) {
+              success: result => {
                 debugger;
                 alert("Transaction id: " + result.data);
               },
-              error: function(XMLHttpRequest, textStatus, errorThrown) {
-                alert("some error");
-              }
+              error: (XMLHttpRequest, textStatus, errorThrown) => alert("some error")
             });
           });
         });
