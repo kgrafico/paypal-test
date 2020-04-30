@@ -16,7 +16,9 @@ docker run  --rm -p 5000:5000 simple-server
 
 ## 3. Open a browser and put the URL
 
+``` javascript javascript
 http:// localhost:5000/client.html
+``` javascript
 
 
 
